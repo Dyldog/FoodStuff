@@ -52,59 +52,69 @@ struct RecipeDetailView: View {
     @ViewBuilder
     private var richView: some View {
         if let recipe = viewModel.recipe {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading) {
-                        if recipe.ingredients.isEmpty == false {
-                            Text("Ingredients")
-                                .font(.largeTitle)
-                                .bold()
-                            
-                            ForEach(recipe.ingredients) { ingredientSection in
-                                if let sectionTitle = ingredientSection.0 {
-                                    Text(sectionTitle)
-                                        .bold()
-                                }
-                                ForEach(ingredientSection.1) { ingredient in
-                                    Text("• " + ingredient)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        if let image = viewModel.recipe?.image {
+                            Image(image: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxHeight: proxy.size.width)
+                                .clipped()
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    
-                    VStack(alignment: .leading) {
-                        if recipe.steps.isEmpty == false {
-                            Text("Steps")
-                                .font(.largeTitle)
-                                .bold()
-                            
-                            ForEach(enumerated: recipe.steps) { sectionIndex, stepSection in
-                                if let sectionTitle = stepSection.0 {
-                                    Text(sectionTitle)
-                                        .bold()
-                                }
-                                ForEach(enumerated: stepSection.1) { stepIndex, step in
-                                    Button {
-                                        viewModel.stepsCompleted[sectionIndex][stepIndex].toggle()
-                                    } label: {
-                                        ZStack {
-                                            RoundedRectangle(cornerRadius: 20)
-                                                .foregroundStyle(Color(white: 0.8))
-                                            Text("\(stepIndex + 1). " + step)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .padding()
-                                                .strikethrough(viewModel.stepsCompleted[sectionIndex][stepIndex], color: .red)
-                                        }
+                        
+                        VStack(alignment: .leading) {
+                            if recipe.ingredients.isEmpty == false {
+                                Text("Ingredients")
+                                    .font(.largeTitle)
+                                    .bold()
+                                
+                                ForEach(recipe.ingredients) { ingredientSection in
+                                    if let sectionTitle = ingredientSection.0 {
+                                        Text(sectionTitle)
+                                            .bold()
                                     }
-                                    .buttonStyle(.plain)
+                                    ForEach(ingredientSection.1) { ingredient in
+                                        Text("• " + ingredient)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        VStack(alignment: .leading) {
+                            if recipe.steps.isEmpty == false {
+                                Text("Steps")
+                                    .font(.largeTitle)
+                                    .bold()
+                                
+                                ForEach(enumerated: recipe.steps) { sectionIndex, stepSection in
+                                    if let sectionTitle = stepSection.0 {
+                                        Text(sectionTitle)
+                                            .bold()
+                                    }
+                                    ForEach(enumerated: stepSection.1) { stepIndex, step in
+                                        Button {
+                                            viewModel.stepsCompleted[sectionIndex][stepIndex].toggle()
+                                        } label: {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 20)
+                                                    .foregroundStyle(Color(white: 0.8))
+                                                Text("\(stepIndex + 1). " + step)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                    .padding()
+                                                    .strikethrough(viewModel.stepsCompleted[sectionIndex][stepIndex], color: .red)
+                                            }
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.horizontal)
             }
         }
     }

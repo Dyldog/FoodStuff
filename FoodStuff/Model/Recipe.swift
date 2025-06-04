@@ -5,11 +5,12 @@
 //  Created by Dylan Elliott on 4/6/2025.
 //
 
-import Foundation
+import UIKit
 
 struct Recipe {
     typealias Section = (String?, [String])
     
+    let image: UIImage?
     let ingredients: [Section]
     let steps: [Section]
     
@@ -28,12 +29,14 @@ struct Recipe {
         return sectionHasErrors(ingredients) || sectionHasErrors(steps)
     }
     
-    init(ingredients: [Section], steps: [Section]) {
+    init(image: UIImage?, ingredients: [Section], steps: [Section]) {
+        self.image = image
         self.ingredients = ingredients
         self.steps = steps
     }
     
-    init(ingredientStrings: [String], stepStrings: [String]) {
+    init(image: UIImage?, ingredientStrings: [String], stepStrings: [String]) {
+        self.image = image
         self.ingredients = [(nil, ingredientStrings.map { string in
             Self.ingredientString(from: string)
         })]

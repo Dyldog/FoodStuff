@@ -70,13 +70,14 @@ class RecipeListViewModel: ObservableObject {
             image: getImage(for: note),
             title: note.title,
             note: note,
-            recipe: .init(ingredients: ingredients ?? [], steps: steps ?? [])
+            recipe: .init(image: getImage(for: note), ingredients: ingredients ?? [], steps: steps ?? [])
         )
     }
     
     private func decodeRecipeFromCookFile(_ note: Note) -> RecipeRowModel {
         let cookRecipe = try! CookInSwift.Recipe.from(text: note.contents)
         let recipe = Recipe(
+            image: getImage(for: note),
             ingredients: [(nil, cookRecipe.ingredientsTable.ingredients.map { ingredient, amount in
                 amount.description + " " + ingredient
             })],
